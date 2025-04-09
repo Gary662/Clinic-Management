@@ -31,7 +31,8 @@ $result = $stmt->get_result();
 </head>
 <body class="container mt-5">
     <h2>Appointments for You</h2>
-    <a href="../index.php" class="btn btn-secondary mb-3">Back</a>
+    <!-- Updated Back Button -->
+    <a href="dashboard.php" class="btn btn-secondary mb-3">Back</a>
 
     <?php if ($result->num_rows > 0): ?>
         <table class="table table-bordered">

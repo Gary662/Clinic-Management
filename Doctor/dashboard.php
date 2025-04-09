@@ -32,9 +32,12 @@ $doctor = $result->fetch_assoc();
 
     <div>
         <a href="view_appointments.php" class="btn btn-primary mb-3">View Appointments</a>
+        <a href="add_note.php" class="btn btn-outline-primary mb-3">Add Medical Note</a>
+        <a href="approve_appointments.php" class="btn btn-outline-success mb-3">Approve Appointments</a>
         <a href="edit_profile.php" class="btn btn-outline-primary mb-3">Edit Profile</a>
     </div>
 
-    <a href="../index.php" class="btn btn-danger">Logout</a>
+    <!-- Updated Logout Button -->
+    <a href="../auth/logout.php" class="btn btn-danger">Logout</a>
 </body>
 </html>
