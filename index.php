@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dry Land Clinic</title>
+  <title>Spring Fountain Clinic</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
@@ -23,6 +23,9 @@
       <?php elseif ($_SESSION['role'] === 'doctor'): ?>
         <a href="doctor/view_appointments.php" class="btn btn-outline-primary me-2">View Appointments</a>
         <a href="doctor/add_note.php" class="btn btn-outline-secondary">Add Medical Note</a>
+        
+      <?php elseif ($_SESSION['role'] === 'admin'): ?>
+        <a href="admin/admin_dashboard.php" class="btn btn-outline-primary me-2">Admin Dashboard</a>
       <?php endif; ?>
 
       <div class="mt-4">

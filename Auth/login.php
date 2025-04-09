@@ -4,28 +4,39 @@ include '../config/db.php';
 
 $error = "";
 
+// Redirect logged-in users to their appropriate dashboard
+if (isset($_SESSION['user_id'])) {
+    header("Location: ../" . ucfirst($_SESSION['role']) . "/dashboard.php");
+    exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
     $role = $_POST["role"];
 
+    // Prepare and execute SQL query to check if the user exists
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Check if the user exists
     if ($user = $result->fetch_assoc()) {
         if (password_verify($password, $user['password'])) {
+            // Check if the selected role matches the user's role
             if ($user['role'] === $role) {
                 $_SESSION["user_id"] = $user["id"];
                 $_SESSION["role"] = $user["role"];
                 $_SESSION["name"] = $user["name"];
 
-                // Redirect based on role
+                // Redirect based on the role
                 if ($role === "patient") {
                     header("Location: ../Patient/dashboard.php");
                 } elseif ($role === "doctor") {
                     header("Location: ../Doctor/dashboard.php");
+                } elseif ($role === "admin") {
+                    header("Location: ../Admin/dashboard.php");
                 }
                 exit;
             } else {
@@ -69,6 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <select name="role" class="form-control">
                 <option value="patient">Patient</option>
                 <option value="doctor">Doctor</option>
+                <option value="admin">Admin</option>
             </select>
         </div>
 

@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteBase /FC2/ClinicApp/api/
+RewriteRule ^(.*)$ api/appointments.php [QSA,L]

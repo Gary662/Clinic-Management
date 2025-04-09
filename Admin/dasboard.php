@@ -2,16 +2,16 @@
 include '../config/db.php';
 session_start();
 
-// Check if user is admin
+// Check if user is an admin
 if ($_SESSION['role'] !== 'admin') {
     header("Location: ../index.php");
     exit;
 }
 
-// Get users
+// Get users from the database
 $users = $conn->query("SELECT id, name, email, role FROM users");
 
-// Get all appointments
+// Get appointments from the database
 $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_name, d.name AS doctor_name 
                               FROM appointments a 
                               JOIN users u ON a.patient_id = u.id
@@ -29,16 +29,34 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
 <body class="container mt-5">
   <h1>Admin Dashboard</h1>
 
+  <!-- Navigation for Admin Dashboard -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Admin Panel</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../index.php">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="logout.php">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
   <!-- Users List -->
-  <h2>Users</h2>
-  <table class="table">
+  <h2>Users Management</h2>
+  <table class="table table-bordered">
     <thead>
       <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
         <th>Role</th>
-        <th>Action</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -49,7 +67,11 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
           <td><?= $user['email'] ?></td>
           <td><?= $user['role'] ?></td>
           <td>
-            <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger">Delete</a>
+            <?php if ($user['role'] != 'admin'): ?>
+              <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger">Delete</a>
+            <?php else: ?>
+              <button class="btn btn-secondary" disabled>Cannot Delete Admin</button>
+            <?php endif; ?>
           </td>
         </tr>
       <?php endwhile; ?>
@@ -57,8 +79,8 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
   </table>
 
   <!-- Appointments List -->
-  <h2>Appointments</h2>
-  <table class="table">
+  <h2>Appointments Management</h2>
+  <table class="table table-bordered">
     <thead>
       <tr>
         <th>Appointment ID</th>
@@ -66,7 +88,7 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
         <th>Doctor</th>
         <th>Date</th>
         <th>Status</th>
-        <th>Action</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -85,6 +107,5 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
       <?php endwhile; ?>
     </tbody>
   </table>
-
 </body>
 </html>
