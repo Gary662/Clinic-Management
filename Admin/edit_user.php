@@ -30,14 +30,12 @@ if (isset($_GET['id'])) {
         $stmt->bind_param("sssi", $name, $email, $role, $user_id);
         $stmt->execute();
 
-        header("Location: manage_users.php");
-        exit;
+        $success_message = "User updated successfully!";
     }
 } else {
     header("Location: manage_users.php");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -51,15 +49,19 @@ if (isset($_GET['id'])) {
 <body class="container mt-5">
     <h1>Edit User</h1>
 
+    <?php if (isset($success_message)): ?>
+        <div class="alert alert-success"><?= $success_message ?></div>
+    <?php endif; ?>
+
     <form method="POST">
         <div class="mb-3">
             <label>Name:</label>
-            <input type="text" name="name" class="form-control" value="<?= $user['name'] ?>" required>
+            <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($user['name']) ?>" required>
         </div>
 
         <div class="mb-3">
             <label>Email:</label>
-            <input type="email" name="email" class="form-control" value="<?= $user['email'] ?>" required>
+            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
         </div>
 
         <div class="mb-3">

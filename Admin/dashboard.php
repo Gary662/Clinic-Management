@@ -16,7 +16,6 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
                               FROM appointments a 
                               JOIN users u ON a.patient_id = u.id
                               JOIN users d ON a.doctor_id = d.id");
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +34,7 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
+          <a class="nav-link" href="dashboard.php">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../index.php">Home</a>
@@ -68,6 +67,7 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
           <td><?= $user['role'] ?></td>
           <td>
             <?php if ($user['role'] != 'admin'): ?>
+              <a href="edit_user.php?id=<?= $user['id'] ?>" class="btn btn-warning">Edit</a>
               <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger">Delete</a>
             <?php else: ?>
               <button class="btn btn-secondary" disabled>Cannot Delete Admin</button>
@@ -100,8 +100,15 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
           <td><?= $appointment['date'] ?></td>
           <td><?= $appointment['status'] ?></td>
           <td>
-            <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success">Approve</a>
-            <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=declined" class="btn btn-danger">Decline</a>
+            <!-- View Details Link -->
+            <a href="view_appointment_details.php?id=<?= $appointment['id'] ?>" class="btn btn-info">View Details</a>
+
+            <?php if ($appointment['status'] == 'pending'): ?>
+              <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success">Approve</a>
+              <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=declined" class="btn btn-danger">Decline</a>
+            <?php else: ?>
+              <span class="text-muted">Already <?= ucfirst($appointment['status']) ?></span>
+            <?php endif; ?>
           </td>
         </tr>
       <?php endwhile; ?>

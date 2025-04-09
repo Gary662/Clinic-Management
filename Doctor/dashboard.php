@@ -34,6 +34,7 @@ $doctor = $result->fetch_assoc();
         <a href="view_appointments.php" class="btn btn-primary mb-3">View Appointments</a>
         <a href="add_note.php" class="btn btn-outline-primary mb-3">Add Medical Note</a>
         <a href="approve_appointments.php" class="btn btn-outline-success mb-3">Approve Appointments</a>
+        <a href="reschedule_appointment.php" class="btn btn-outline-warning mb-3">Reschedule Appointment</a> <!-- Added link -->
         <a href="edit_profile.php" class="btn btn-outline-primary mb-3">Edit Profile</a>
     </div>
 

@@ -25,7 +25,7 @@
         <a href="doctor/add_note.php" class="btn btn-outline-secondary">Add Medical Note</a>
         
       <?php elseif ($_SESSION['role'] === 'admin'): ?>
-        <a href="admin/admin_dashboard.php" class="btn btn-outline-primary me-2">Admin Dashboard</a>
+        <a href="admin/dashboard.php" class="btn btn-outline-primary me-2">Admin Dashboard</a>
       <?php endif; ?>
 
       <div class="mt-4">

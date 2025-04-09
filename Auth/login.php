@@ -40,6 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
                 exit;
             } else {
+                // Debugging: output roles to help identify the issue
+                echo "Selected role: " . $role . "<br>";
+                echo "User role: " . $user['role'] . "<br>";
                 $error = "Role mismatch. Please select the correct role.";
             }
         } else {
@@ -52,8 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
