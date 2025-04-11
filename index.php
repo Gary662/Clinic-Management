@@ -1,37 +1,109 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Spring Fountain Clinic</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Your Clinic</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .hero {
+      background: url('../assets/clinic-banner.jpg') center/cover no-repeat;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 1px 1px 4px #000;
+    }
+
+    .services .card {
+      border: none;
+      border-radius: 1rem;
+      transition: 0.3s ease;
+    }
+
+    .services .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    footer {
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 3rem;
+    }
+  </style>
 </head>
-<body class="container mt-5">
-  <div class="text-center">
-    <h1 class="mb-4">🏥 Welcome to Spring Fountain Clinic</h1>
+<body>
 
-    <?php if (!isset($_SESSION['user_id'])): ?>
-      <a href="auth/register.php" class="btn btn-success me-2">Register</a>
-      <a href="auth/login.php" class="btn btn-primary">Login</a>
-
-    <?php else: ?>
-      <p class="lead">You are logged in as <strong><?= ucfirst($_SESSION['role']) ?></strong>.</p>
-
-      <?php if ($_SESSION['role'] === 'patient'): ?>
-        <a href="patient/book_appointment.php" class="btn btn-outline-primary me-2">Book Appointment</a>
-        <a href="patient/view_history.php" class="btn btn-outline-secondary">View Medical History</a>
-
-      <?php elseif ($_SESSION['role'] === 'doctor'): ?>
-        <a href="doctor/view_appointments.php" class="btn btn-outline-primary me-2">View Appointments</a>
-        <a href="doctor/add_note.php" class="btn btn-outline-secondary">Add Medical Note</a>
-        
-      <?php elseif ($_SESSION['role'] === 'admin'): ?>
-        <a href="admin/dashboard.php" class="btn btn-outline-primary me-2">Admin Dashboard</a>
-      <?php endif; ?>
-
-      <div class="mt-4">
-        <a href="auth/logout.php" class="btn btn-danger">Logout</a>
-      </div>
-    <?php endif; ?>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand text-primary" href="#">Fountain Spring Clinic</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Appointments</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+    </div>
   </div>
+</nav>
+
+<!-- Hero Banner -->
+<div class="hero">
+  <div class="text-center">
+    <h1 class="display-4 fw-bold">Caring For Your Health</h1>
+    <p class="lead">Book appointments, view history, and connect with your doctor.</p>
+    <a href="auth/login.php" class="btn btn-primary btn-lg mt-3">Get Started</a>
+  </div>
+</div>
+
+<!-- Services Section -->
+<section class="services container my-5">
+  <h2 class="text-center mb-4 text-primary">Our Services</h2>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h4>Appointment Booking</h4>
+        <p>Schedule visits with our certified doctors easily through your dashboard.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h4>Medical Records</h4>
+        <p>Access and manage your medical history in one convenient place.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h4>Patient Support</h4>
+        <p>Reach out to our team or chat with your doctor directly through the portal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  &copy; <?= date("Y") ?> Fountain Spring Clinic. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -20,8 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $doctor_id = $_POST['doctor_id'] ?? null;
     $date = $_POST['date'] ?? null;
 
-    if ($doctor_id && $date) {
-        // Prevent duplicate appointments
+    // New fields
+    $full_name = $_POST['full_name'] ?? ''; // Full Name
+    $phone = $_POST['phone'] ?? '';
+    $health_care_number = $_POST['health_care_number'] ?? ''; // Alberta Health Care Number
+    $sex = $_POST['sex'] ?? '';
+    $age = $_POST['age'] ?? 0;
+    $dob = $_POST['dob'] ?? ''; // Date of Birth
+
+    if ($doctor_id && $date && $full_name && $phone && $health_care_number && $sex && $age && $dob) {
         $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND date = ?");
         $check->bind_param("iis", $patient_id, $doctor_id, $date);
         $check->execute();
@@ -30,22 +37,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $error = "You already have an appointment at this time.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, date, status) VALUES (?, ?, ?, 'pending')");
-            $stmt->bind_param("iis", $patient_id, $doctor_id, $date);
+            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, date, status, full_name, phone, health_care_number, sex, age, dob) 
+                                    VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $date, $full_name, $phone, $health_care_number, $sex, $age, $dob);
             $stmt->execute();
             $success = "Appointment requested!";
         }
     } else {
-        $error = "Please select a doctor and pick a date.";
+        $error = "Please fill in all required fields.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Appointment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css"> <!-- Link to your centralized CSS -->
 </head>
 <body class="container mt-5">
     <h2>Book an Appointment</h2>
@@ -58,21 +68,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" class="mt-4">
         <div class="mb-3">
-            <label class="form-label">Doctor:</label>
-            <select name="doctor_id" class="form-control" required>
-                <option value="">Select a doctor</option>
-                <?php while ($row = $doctors->fetch_assoc()): ?>
-                    <option value="<?= $row['id'] ?>"><?= $row['name'] ?> (<?= $row['specialty'] ?>)</option>
-                <?php endwhile; ?>
+            <label class="form-label">Full Name:</label>
+            <input type="text" name="full_name" class="form-control" required>
+        </div>
+
+        <!-- New Patient Details -->
+        <div class="mb-3">
+            <label class="form-label">Phone Number:</label>
+            <input type="text" name="phone" class="form-control" required>
+        </div>
+
+        <!-- Alberta Health Care Number -->
+        <div class="mb-3">
+            <label class="form-label">Alberta Health Care Number:</label>
+            <input type="text" name="health_care_number" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sex:</label>
+            <select name="sex" class="form-control" required>
+                <option value="">Select...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
             </select>
         </div>
+
         <div class="mb-3">
-            <label class="form-label">Date:</label>
-            <input type="datetime-local" name="date" class="form-control" required min="<?= date('Y-m-d\TH:i') ?>">
+            <label class="form-label">Age:</label>
+            <input type="number" name="age" class="form-control" min="0" required>
         </div>
+
+        <!-- Date of Birth -->
+        <div class="mb-3">
+            <label class="form-label">Date of Birth:</label>
+            <input type="date" name="dob" class="form-control" required>
+        </div>
+
         <button type="submit" class="btn btn-primary">Book</button>
         <a href="../Patient/dashboard.php" class="btn btn-secondary">Back</a>
-
     </form>
 </body>
 </html>
