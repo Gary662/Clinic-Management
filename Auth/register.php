@@ -7,8 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $email = trim($_POST['email']);
   $password = $_POST['password'];
   $role = $_POST['role'];
+  
+  // New fields for patient registration
+  $phone = $_POST['phone'];
+  $address = $_POST['address'];
+  $sex = $_POST['sex'];
+  $age = $_POST['age'];
+  $dob = $_POST['dob'];
+  $health_care_number = $_POST['health_care_number'];
 
-  if (!$name || !$email || !$password || !$role) {
+  if (!$name || !$email || !$password || !$role || !$phone || !$address || !$sex || !$age || !$dob || !$health_care_number) {
     $errors[] = "All fields are required.";
   } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Invalid email address.";
@@ -21,8 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $errors[] = "Email already exists.";
     } else {
       $hash = password_hash($password, PASSWORD_DEFAULT);
-      $stmt = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-      $stmt->bind_param("ssss", $name, $email, $hash, $role);
+      $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, phone, address, sex, age, dob, health_care_number) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+      $stmt->bind_param("ssssssssss", $name, $email, $hash, $role, $phone, $address, $sex, $age, $dob, $health_care_number);
       $stmt->execute();
       header("Location: login.php?registered=1");
       exit;
@@ -30,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,17 +55,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <?php endforeach; ?>
     </div>
   <?php endif; ?>
+  
   <form method="POST" class="form-group">
     <input type="text" name="name" placeholder="Name" class="form-control mb-2" required>
     <input type="email" name="email" placeholder="Email" class="form-control mb-2" required>
     <input type="password" name="password" placeholder="Password" class="form-control mb-2" required>
+    
+    <!-- New fields for patient registration -->
+    <input type="text" name="phone" placeholder="Phone Number" class="form-control mb-2" required>
+    <input type="text" name="address" placeholder="Address" class="form-control mb-2" required>
+    
+    <select name="sex" class="form-control mb-2" required>
+      <option value="">Select Sex</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    
+    <input type="number" name="age" placeholder="Age" class="form-control mb-2" required>
+    <input type="date" name="dob" placeholder="Date of Birth" class="form-control mb-2" required>
+    <input type="text" name="health_care_number" placeholder="Health Care Number" class="form-control mb-2" required>
+    
     <select name="role" class="form-control mb-2">
       <option value="patient">Patient</option>
       <option value="doctor">Doctor</option>
       <option value="admin">Admin</option>
     </select>
+    
     <button type="submit" class="btn btn-primary">Register</button>
   </form>
+  
   <a href="../index.php">← Back</a>
 </body>
 </html>

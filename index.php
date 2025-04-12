@@ -56,26 +56,27 @@
     </button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Appointments</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Doctors</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+        <!-- Updated links -->
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#appointments">Appointments</a></li>
+        <li class="nav-item"><a class="nav-link" href="#doctors">Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
 <!-- Hero Banner -->
-<div class="hero">
+<div id="home" class="hero">
   <div class="text-center">
     <h1 class="display-4 fw-bold">Caring For Your Health</h1>
     <p class="lead">Book appointments, view history, and connect with your doctor.</p>
-    <a href="auth/login.php" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    <a href="auth/dashboard.php" class="btn btn-primary btn-lg mt-3">Get Started</a>
   </div>
 </div>
 
 <!-- Services Section -->
-<section class="services container my-5">
+<section id="appointments" class="services container my-5">
   <h2 class="text-center mb-4 text-primary">Our Services</h2>
   <div class="row">
     <div class="col-md-4">
@@ -97,6 +98,28 @@
       </div>
     </div>
   </div>
+</section>
+
+
+<!-- Contact Section (Placeholder) -->
+<section id="contact" class="container my-5">
+  <h2 class="text-center mb-4 text-primary">Contact Us</h2>
+  <p>If you have any questions or need assistance, feel free to reach out!</p>
+  <form>
+    <div class="mb-3">
+      <label for="name" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="name" placeholder="Your Name">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="Your Email">
+    </div>
+    <div class="mb-3">
+      <label for="message" class="form-label">Message</label>
+      <textarea class="form-control" id="message" rows="3" placeholder="Your Message"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+  </form>
 </section>
 
 <!-- Footer -->
