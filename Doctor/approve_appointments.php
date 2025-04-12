@@ -59,7 +59,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
                 <tr>
                     <th>Appointment ID</th>
                     <th>Patient</th>
-                    <th>Appointment Date</th>
+                    <th>Appointment Date & Time</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -69,6 +69,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
                     <tr>
                         <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['patient_name']) ?></td>
+                        <!-- Display both date and time -->
                         <td><?= date('Y-m-d H:i', strtotime($row['date'])) ?></td>
                         <td><?= ucfirst($row['status']) ?></td>
                         <td>

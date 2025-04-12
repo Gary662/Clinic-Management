@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $patient_id = $_SESSION['user_id'];
     $doctor_id = $_POST['doctor_id'] ?? null;
     $date = $_POST['date'] ?? null;
+    $time = $_POST['time'] ?? null; // Time from the form
 
     // New fields
     $full_name = $_POST['full_name'] ?? ''; // Full Name
@@ -27,18 +28,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $age = $_POST['age'] ?? 0;
     $dob = $_POST['dob'] ?? ''; // Date of Birth
 
-    if ($doctor_id && $date && $full_name && $phone && $health_care_number && $sex && $age && $dob) {
-        $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND date = ?");
-        $check->bind_param("iis", $patient_id, $doctor_id, $date);
+    if ($doctor_id && $date && $time && $full_name && $phone && $health_care_number && $sex && $age && $dob) {
+        // Combine the date and time into a single datetime for the appointment
+        $appointment_datetime = $date . ' ' . $time;
+
+        // Check if the patient already has an appointment with the same doctor at the same datetime
+        $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND appointment_datetime = ?");
+        $check->bind_param("iis", $patient_id, $doctor_id, $appointment_datetime);
         $check->execute();
         $result = $check->get_result();
 
         if ($result->num_rows > 0) {
             $error = "You already have an appointment at this time.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, date, status, full_name, phone, health_care_number, sex, age, dob) 
+            // Insert the appointment with the combined date and time
+            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, full_name, phone, health_care_number, sex, age, dob) 
                                     VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $date, $full_name, $phone, $health_care_number, $sex, $age, $dob);
+            $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $appointment_datetime, $full_name, $phone, $health_care_number, $sex, $age, $dob);
             $stmt->execute();
             $success = "Appointment requested!";
         }
@@ -154,6 +160,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label class="form-label">Preferred Appointment Date:</label>
                 <input type="date" name="date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Preferred Appointment Time:</label>
+                <input type="time" name="time" class="form-control" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Book</button>

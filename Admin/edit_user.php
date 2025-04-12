@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
     $user_id = $_GET['id'];
 
     // Fetch the user's details
-    $stmt = $conn->prepare("SELECT name, email, role FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT name, email, role, phone, address, gender FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -24,12 +24,22 @@ if (isset($_GET['id'])) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $role = $_POST['role'];
+        $phone = $_POST['phone'];
+        $address = $_POST['address'];
+        $gender = $_POST['gender'];
+        $password = $_POST['password'];
 
         // Update user information
-        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("sssi", $name, $email, $role, $user_id);
-        $stmt->execute();
+        if (!empty($password)) {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, phone = ?, address = ?, gender = ?, password = ? WHERE id = ?");
+            $stmt->bind_param("sssssssi", $name, $email, $role, $phone, $address, $gender, $hashed_password, $user_id);
+        } else {
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, phone = ?, address = ?, gender = ? WHERE id = ?");
+            $stmt->bind_param("ssssssi", $name, $email, $role, $phone, $address, $gender, $user_id);
+        }
 
+        $stmt->execute();
         $success_message = "User updated successfully!";
     }
 } else {
@@ -66,11 +76,35 @@ if (isset($_GET['id'])) {
 
         <div class="mb-3">
             <label>Role:</label>
-            <select name="role" class="form-control">
+            <select name="role" class="form-control" required>
                 <option value="patient" <?= $user['role'] == 'patient' ? 'selected' : '' ?>>Patient</option>
                 <option value="doctor" <?= $user['role'] == 'doctor' ? 'selected' : '' ?>>Doctor</option>
                 <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Gender:</label>
+            <select name="gender" class="form-control" required>
+                <option value="male" <?= $user['gender'] == 'male' ? 'selected' : '' ?>>Male</option>
+                <option value="female" <?= $user['gender'] == 'female' ? 'selected' : '' ?>>Female</option>
+                <option value="other" <?= $user['gender'] == 'other' ? 'selected' : '' ?>>Other</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Phone Number:</label>
+            <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Address:</label>
+            <textarea name="address" class="form-control" required><?= htmlspecialchars($user['address']) ?></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>New Password (leave blank to keep current):</label>
+            <input type="password" name="password" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>

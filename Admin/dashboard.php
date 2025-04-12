@@ -16,6 +16,7 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
                               FROM appointments a 
                               JOIN users u ON a.patient_id = u.id
                               JOIN users d ON a.doctor_id = d.id");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -97,11 +98,25 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
           <td><?= $appointment['id'] ?></td>
           <td><?= $appointment['patient_name'] ?></td>
           <td><?= $appointment['doctor_name'] ?></td>
-          <td><?= $appointment['date'] ?></td>
-          <td><?= $appointment['status'] ?></td>
+          <td><?= date('Y-m-d H:i', strtotime($appointment['date'])) ?></td>
+          <td><?= ucfirst($appointment['status']) ?></td>
           <td>
             <!-- View Details Link -->
             <a href="view_appointment_details.php?id=<?= $appointment['id'] ?>" class="btn btn-info">View Details</a>
+
+            <!-- Add Diagnosis Button -->
+            <a href="add_diagnosis.php?id=<?= $appointment['id'] ?>" class="btn btn-primary">Add Diagnosis</a>
+
+            <!-- Complete Appointment Button -->
+            <?php if ($appointment['status'] == 'approved'): ?>
+                <a href="complete_appointment.php?id=<?= $appointment['id'] ?>" class="btn btn-success">Complete Appointment</a>
+            <?php endif; ?>
+
+            <!-- Upload File Button -->
+            <a href="view_appointment_details.php?id=<?= $appointment['id'] ?>" class="btn btn-warning">Upload File</a>
+
+            <!-- Delete Appointment Button -->
+            <a href="delete_appointment.php?id=<?= $appointment['id'] ?>" class="btn btn-danger">Delete Appointment</a>
 
             <?php if ($appointment['status'] == 'pending'): ?>
               <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success">Approve</a>

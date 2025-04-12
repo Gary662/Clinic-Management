@@ -10,8 +10,8 @@ if (!isset($_SESSION['user_id'])) {
 
 $patient_id = $_SESSION['user_id'];
 
-// Fetch all the appointments of the patient
-$stmt = $conn->prepare("SELECT id, date, doctor_id, status FROM appointments WHERE patient_id = ?");
+// Fetch all the appointments of the patient, including the time
+$stmt = $conn->prepare("SELECT id, date, time, doctor_id, status FROM appointments WHERE patient_id = ?");
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -32,7 +32,7 @@ if (isset($_GET['cancel_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointments</title>
+    <title>Your Appointments</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
@@ -46,6 +46,7 @@ if (isset($_GET['cancel_id'])) {
         <thead>
             <tr>
                 <th>Appointment Date</th>
+                <th>Appointment Time</th>
                 <th>Doctor</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -55,6 +56,7 @@ if (isset($_GET['cancel_id'])) {
             <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
                     <td><?= $row['date'] ?></td>
+                    <td><?= $row['time'] ?></td> <!-- Display the appointment time -->
                     <td><?= $row['doctor_id'] ?></td> <!-- You can join doctor table for name -->
                     <td><?= $row['status'] ?></td>
                     <td>

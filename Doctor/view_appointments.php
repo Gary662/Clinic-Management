@@ -2,6 +2,7 @@
 session_start();
 include '../config/db.php';
 
+// Ensure the user is logged in and is a doctor
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'doctor') {
     header("Location: ../auth/login.php");
     exit;
@@ -9,6 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'doctor') {
 
 $doctor_id = $_SESSION['user_id'];
 
+// Query to fetch appointments for the logged-in doctor
 $query = "
     SELECT a.id, a.date, a.status, u.name AS patient_name
     FROM appointments a
@@ -23,25 +25,26 @@ $result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Appointments</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="container mt-5">
     <h2>Appointments for You</h2>
-    <!-- Updated Back Button -->
-    <a href="dashboard.php" class="btn btn-secondary mb-3">Back</a>
+    <a href="dashboard.php" class="btn btn-secondary mb-3">← Back</a>
 
     <?php if ($result->num_rows > 0): ?>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Patient</th>
-                    <th>Date</th>
+                    <th>Appointment Date & Time</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="appointments-list">
@@ -52,10 +55,14 @@ $result = $stmt->get_result();
                         <td class="status"><?= ucfirst($row['status']) ?></td>
                         <td>
                             <?php if ($row['status'] == 'pending'): ?>
-                                <button class="btn btn-success approve-btn" data-appointment-id="<?= $row['id'] ?>">Approve</button>
+                                <button class="btn btn-success btn-sm approve-btn mb-1" data-appointment-id="<?= $row['id'] ?>">Approve</button><br>
                             <?php else: ?>
-                                <span class="text-muted">Already <?= ucfirst($row['status']) ?></span>
+                                <span class="text-muted d-block mb-1">Approved</span>
                             <?php endif; ?>
+
+                            <a href="add_note.php?id=<?= $row['id'] ?>" class="btn btn-primary btn-sm mb-1">Add Note</a><br>
+                            <a href="reschedule_appointment.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm mb-1">Reschedule</a><br>
+                            <a href="view_patient.php?appointment_id=<?= $row['id'] ?>" class="btn btn-info btn-sm">Patient Info</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -73,14 +80,17 @@ $(document).ready(function() {
         const row = $(this).closest('tr');
         
         $.ajax({
-            url: 'approve_appointment.php',
+            url: 'approve_appointment.php',  // The PHP file to handle approval
             type: 'POST',
             data: { appointment_id: appointmentId },
             success: function(response) {
-                // Update the status dynamically
-                row.find('.status').text('Approved');
-                row.find('.approve-btn').remove();
-                row.find('td:last-child').html('<span class="text-muted">Already Approved</span>');
+                if (response == 'success') {
+                    row.find('.status').text('Approved');
+                    row.find('.approve-btn').remove();
+                    row.find('td:last-child').prepend('<span class="text-muted d-block mb-1">Approved</span>');
+                } else {
+                    alert('Error approving the appointment.');
+                }
             },
             error: function() {
                 alert('Error approving the appointment.');
@@ -89,5 +99,4 @@ $(document).ready(function() {
     });
 });
 </script>
-
 </html>

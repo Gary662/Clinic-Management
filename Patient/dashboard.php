@@ -25,7 +25,6 @@ $patient = $result->fetch_assoc();
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Patient Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="../assets/style.css"> <!-- Your custom styling -->
   <style>
     body {
       background-color: #f8f9fa;
@@ -110,9 +109,6 @@ $patient = $result->fetch_assoc();
   </div>
 </div>
 
-<footer>
-  &copy; <?php echo date("Y"); ?> Fountain Spring Clinic. All rights reserved.
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
