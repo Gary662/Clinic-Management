@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 // Fetch all users
 $users = $conn->query("SELECT id, name, email, role FROM users");
-
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +22,10 @@ $users = $conn->query("SELECT id, name, email, role FROM users");
 </head>
 <body class="container mt-5">
     <h1>Manage Users</h1>
+
+    <?php if (isset($_GET['deleted'])): ?>
+        <div class="alert alert-success">User deleted successfully.</div>
+    <?php endif; ?>
 
     <table class="table">
         <thead>
@@ -38,12 +41,16 @@ $users = $conn->query("SELECT id, name, email, role FROM users");
             <?php while ($user = $users->fetch_assoc()): ?>
                 <tr>
                     <td><?= $user['id'] ?></td>
-                    <td><?= $user['name'] ?></td>
-                    <td><?= $user['email'] ?></td>
-                    <td><?= $user['role'] ?></td>
+                    <td><?= htmlspecialchars($user['name']) ?></td>
+                    <td><?= htmlspecialchars($user['email']) ?></td>
+                    <td><?= htmlspecialchars($user['role']) ?></td>
                     <td>
-                        <a href="edit_user.php?id=<?= $user['id'] ?>" class="btn btn-warning">Edit</a>
-                        <a href="delete_user.php?id=<?= $user['id'] ?>" class="btn btn-danger">Delete</a>
+                        <a href="edit_user.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+
+                        <form method="POST" action="delete_user.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
                     </td>
                 </tr>
             <?php endwhile; ?>

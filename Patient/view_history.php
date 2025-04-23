@@ -2,6 +2,7 @@
 session_start();
 include '../config/db.php';
 
+// Ensure the user is logged in and is a patient
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
     header("Location: ../auth/login.php");
     exit;
@@ -9,33 +10,24 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
 
 $patient_id = $_SESSION['user_id'];
 
-// $query = "
-//     SELECT a.appointment_datetime, a.status, u.name AS doctor_name, mh.notes
-//     FROM appointments a
-//     JOIN users u ON a.doctor_id = u.id
-//     LEFT JOIN medical_history mh 
-//         ON a.patient_id = mh.patient_id 
-//         AND 
-//     WHERE a.patient_id = ?
-//     ORDER BY a.date DESC
-// ";
+// Fetch medical history with diagnosis and notes
 $query = "
 SELECT 
     a.appointment_datetime, 
     a.status, 
     u.name AS doctor_name, 
-    mh.notes
+    mh.notes,
+    mh.diagnosis
 FROM 
     appointments a
 JOIN 
     users u ON a.doctor_id = u.id
 LEFT JOIN 
-    medical_history mh ON mh.patient_id = a.patient_id 
+    medical_history mh ON mh.appointment_id = a.id
 WHERE 
     a.patient_id = ?
 ORDER BY 
     a.appointment_datetime DESC
-
 ";
 
 $stmt = $conn->prepare($query);
@@ -45,15 +37,16 @@ $result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Medical History</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Medical History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-5">
     <h2>Your Medical History</h2>
     <a href="../Patient/dashboard.php" class="btn btn-secondary mb-3">Back</a>
-
 
     <?php if ($result->num_rows > 0): ?>
         <table class="table table-bordered">
@@ -63,6 +56,7 @@ $result = $stmt->get_result();
                     <th>Doctor</th>
                     <th>Status</th>
                     <th>Notes</th>
+                    <th>Diagnosis</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,6 +66,7 @@ $result = $stmt->get_result();
                         <td><?= htmlspecialchars($row['doctor_name']) ?></td>
                         <td><?= ucfirst($row['status']) ?></td>
                         <td><?= $row['notes'] ? htmlspecialchars($row['notes']) : '—' ?></td>
+                        <td><?= $row['diagnosis'] ? htmlspecialchars($row['diagnosis']) : '—' ?></td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>

@@ -8,6 +8,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
+// Handle deletion if requested
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']);
+    $conn->query("DELETE FROM contact_messages WHERE id = $delete_id");
+    header("Location: messages.php"); // Refresh after deletion
+    exit;
+}
+
 // Fetch contact messages
 $messages = $conn->query("SELECT * FROM contact_messages ORDER BY id DESC");
 ?>
@@ -43,7 +51,8 @@ $messages = $conn->query("SELECT * FROM contact_messages ORDER BY id DESC");
             <td><?= nl2br(htmlspecialchars($row['message'])) ?></td>
             <td><?= isset($row['created_at']) ? $row['created_at'] : 'N/A' ?></td>
             <td>
-              <a href="reply_message.php?email=<?= urlencode($row['email']) ?>&name=<?= urlencode($row['name']) ?>" class="btn btn-sm btn-primary">Reply</a>
+              <a href="reply_message.php?email=<?= urlencode($row['email']) ?>&name=<?= urlencode($row['name']) ?>" class="btn btn-sm btn-primary mb-1">Reply</a>
+              <a href="messages.php?delete_id=<?= $row['id'] ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Are you sure you want to delete this message?')">Delete</a>
             </td>
           </tr>
         <?php endwhile; ?>

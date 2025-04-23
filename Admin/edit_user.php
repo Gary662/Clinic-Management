@@ -110,5 +110,13 @@ if (isset($_GET['id'])) {
         <button type="submit" class="btn btn-primary">Save Changes</button>
         <a href="manage_users.php" class="btn btn-secondary">Back to Users</a>
     </form>
+
+    <!-- Delete Form -->
+    <form method="POST" action="delete_user.php" class="mt-3">
+        <input type="hidden" name="user_id" value="<?= $user_id ?>">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">
+            Delete User
+        </button>
+    </form>
 </body>
 </html>

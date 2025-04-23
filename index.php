@@ -34,6 +34,7 @@
 
     .navbar-brand {
       font-weight: bold;
+      font-size: 1.8rem; /* Increased font size */
     }
 
     footer {
@@ -112,7 +113,6 @@
   <div class="alert alert-danger"><?= $_SESSION['contact_error']; unset($_SESSION['contact_error']); ?></div>
 <?php endif; ?>
 
-  
   <form action="handle_contact.php" method="POST">
     <div class="mb-3">
       <label for="name" class="form-label">Full Name</label>

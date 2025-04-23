@@ -13,7 +13,6 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
                               FROM appointments a
                               JOIN users u ON a.patient_id = u.id
                               JOIN users d ON a.doctor_id = d.id");
-
 ?>
 
 <!DOCTYPE html>
@@ -42,13 +41,33 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
             <?php while ($appointment = $appointments->fetch_assoc()): ?>
                 <tr>
                     <td><?= $appointment['id'] ?></td>
-                    <td><?= $appointment['patient_name'] ?></td>
-                    <td><?= $appointment['doctor_name'] ?></td>
-                    <td><?= $appointment['date'] ?></td>
-                    <td><?= $appointment['status'] ?></td>
+                    <td><?= htmlspecialchars($appointment['patient_name']) ?></td>
+                    <td><?= htmlspecialchars($appointment['doctor_name']) ?></td>
+                    <td><?= date('Y-m-d H:i', strtotime($appointment['date'])) ?></td>
                     <td>
-                        <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success">Approve</a>
-                        <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=declined" class="btn btn-danger">Decline</a>
+                        <?php
+                        // Display status with color
+                        $statusClass = '';
+                        switch ($appointment['status']) {
+                            case 'approved':
+                                $statusClass = 'bg-success text-white';
+                                break;
+                            case 'declined':
+                                $statusClass = 'bg-danger text-white';
+                                break;
+                            default:
+                                $statusClass = 'bg-warning text-dark';
+                                break;
+                        }
+                        ?>
+                        <span class="badge <?= $statusClass ?>"><?= ucfirst($appointment['status']) ?></span>
+                    </td>
+                    <td>
+                        <!-- Approve Appointment -->
+                        <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this appointment?');">Approve</a>
+
+                        <!-- Decline Appointment -->
+                        <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=declined" class="btn btn-danger" onclick="return confirm('Are you sure you want to decline this appointment?');">Decline</a>
                     </td>
                 </tr>
             <?php endwhile; ?>

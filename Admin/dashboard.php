@@ -28,38 +28,29 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
 <body class="container mt-5">
   <h1>Admin Dashboard</h1>
 
-  <!-- Navigation for Admin Dashboard -->
+  <!-- Notification -->
+  <?php if (isset($_GET['deleted'])): ?>
+    <div class="alert alert-success">Appointment deleted successfully.</div>
+  <?php endif; ?>
+
+  <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
     <a class="navbar-brand" href="#">Admin Panel</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="dashboard.php">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="messages.php">Messages</a> <!-- ✅ New Messages Link -->
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="logout.php">Logout</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="messages.php">Messages</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Users List -->
+  <!-- Users Table -->
   <h2>Users Management</h2>
   <table class="table table-bordered">
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Actions</th>
-      </tr>
+      <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
     </thead>
     <tbody>
       <?php while ($user = $users->fetch_assoc()): ?>
@@ -81,7 +72,7 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
     </tbody>
   </table>
 
-  <!-- Appointments List -->
+  <!-- Appointments Table -->
   <h2>Appointments Management</h2>
   <table class="table table-bordered">
     <thead>
@@ -103,22 +94,18 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
           <td><?= date('Y-m-d H:i', strtotime($appointment['date'])) ?></td>
           <td><?= ucfirst($appointment['status']) ?></td>
           <td>
-            <!-- View Details Link -->
             <a href="view_appointment_details.php?id=<?= $appointment['id'] ?>" class="btn btn-info">View Details</a>
-
-            <!-- Add Diagnosis Button -->
             <a href="add_diagnosis.php?id=<?= $appointment['id'] ?>" class="btn btn-primary">Add Diagnosis</a>
-
-            <!-- Complete Appointment Button -->
             <?php if ($appointment['status'] == 'approved'): ?>
-                <a href="complete_appointment.php?id=<?= $appointment['id'] ?>" class="btn btn-success">Complete Appointment</a>
+              <a href="complete_appointment.php?id=<?= $appointment['id'] ?>" class="btn btn-success">Complete</a>
             <?php endif; ?>
-
-            <!-- Upload File Button -->
             <a href="view_appointment_details.php?id=<?= $appointment['id'] ?>" class="btn btn-warning">Upload File</a>
-
-            <!-- Delete Appointment Button -->
-            <a href="delete_appointment.php?id=<?= $appointment['id'] ?>" class="btn btn-danger">Delete Appointment</a>
+            
+            <!-- Delete appointment (POST form) -->
+            <form action="delete_appointment.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+              <input type="hidden" name="appointment_id" value="<?= $appointment['id'] ?>">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
 
             <?php if ($appointment['status'] == 'pending'): ?>
               <a href="approve_appointment.php?id=<?= $appointment['id'] ?>&status=approved" class="btn btn-success">Approve</a>

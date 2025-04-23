@@ -11,23 +11,29 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'doctor') {
 // Handle the form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $patient_id = $_POST['patient_id'];
-    $doctor_id = $_SESSION['user_id']; // use logged-in doctor's ID
+    $appointment_id = $_POST['appointment_id'];
+    $doctor_id = $_SESSION['user_id'];
     $notes = $_POST['notes'];
+    $diagnosis = $_POST['diagnosis'];
 
     // Basic validation
-    if (empty($patient_id) || empty($notes)) {
-        $error = "Patient ID and notes are required.";
+    if (empty($patient_id) || empty($notes) || empty($appointment_id)) {
+        $error = "Patient ID, appointment ID, and notes are required.";
     } else {
-        // Sanitize the inputs (especially for notes)
+        // Sanitize the inputs
         $notes = htmlspecialchars($notes);
+        $diagnosis = htmlspecialchars($diagnosis);
 
         // Prepare and execute the SQL query to insert the medical note
-        $stmt = $conn->prepare("INSERT INTO medical_history (patient_id, doctor_id, visit_date, notes) VALUES (?, ?, ?, ?)");
+        $stmt = $conn->prepare("
+            INSERT INTO medical_history (patient_id, doctor_id, appointment_id, visit_date, notes, diagnosis) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
         $visit_date = date("Y-m-d H:i:s"); // Current date and time
-        $stmt->bind_param("iiss", $patient_id, $doctor_id, $visit_date, $notes);
+        $stmt->bind_param("iiisss", $patient_id, $doctor_id, $appointment_id, $visit_date, $notes, $diagnosis);
 
         if ($stmt->execute()) {
-            $success = "Note added successfully!";
+            $success = "Medical note and diagnosis added successfully!";
         } else {
             $error = "Failed to add note. Please try again later.";
         }
@@ -59,8 +65,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="mb-3">
-            <label for="notes" class="form-label">Notes:</label>
+            <label for="appointment_id" class="form-label">Appointment ID:</label>
+            <input type="number" name="appointment_id" id="appointment_id" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="notes" class="form-label">Medical Notes:</label>
             <textarea name="notes" id="notes" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="diagnosis" class="form-label">Diagnosis:</label>
+            <textarea name="diagnosis" id="diagnosis" class="form-control" rows="3"></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Add Note</button>
