@@ -3,48 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to Your Clinic</title>
+  <title>Fountain Spring Clinic</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fa;
-    }
-
-    .hero {
-      background: url('./assets/clinic-banner.jpg') center/cover no-repeat;
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-shadow: 1px 1px 4px #000;
-    }
-
-    .services .card {
-      border: none;
-      border-radius: 1rem;
-      transition: 0.3s ease;
-    }
-
-    .services .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-
-    .navbar-brand {
-      font-weight: bold;
-      font-size: 1.8rem; /* Increased font size */
-    }
-
-    footer {
-      background-color: #007bff;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      margin-top: 3rem;
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -66,7 +28,7 @@
   </div>
 </nav>
 
-<!-- Hero Banner -->
+<!-- Hero -->
 <div id="home" class="hero">
   <div class="text-center">
     <h1 class="display-4 fw-bold">Caring For Your Health</h1>
@@ -75,7 +37,7 @@
   </div>
 </div>
 
-<!-- Services Section -->
+<!-- Services -->
 <section id="appointments" class="services container my-5">
   <h2 class="text-center mb-4 text-primary">Our Services</h2>
   <div class="row">
@@ -100,41 +62,101 @@
   </div>
 </section>
 
-<!-- Contact Section -->
+<!-- Testimonials -->
+<section class="container my-5">
+  <h2 class="text-center mb-4 text-primary">What Our Patients Say</h2>
+  <div class="row">
+    <div class="col-md-6 fade-in-up">
+      <blockquote class="blockquote">
+        <p>"The doctors are friendly and professional. Booking is easy and fast!"</p>
+        <footer class="blockquote-footer">Emily R.</footer>
+      </blockquote>
+    </div>
+    <div class="col-md-6 fade-in-up">
+      <blockquote class="blockquote">
+        <p>"Highly recommend this clinic. They've helped me a lot over the years!"</p>
+        <footer class="blockquote-footer">Daniel M.</footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="container my-5">
+  <h2 class="text-center mb-4 text-primary">Frequently Asked Questions</h2>
+  <div class="accordion fade-in-up" id="faqAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">
+          How do I book an appointment?
+        </button>
+      </h2>
+      <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">Log in to your dashboard and select a doctor and time slot.</div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">
+          Can I view my previous medical history?
+        </button>
+      </h2>
+      <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">Yes! All your visit history is saved in your profile under Medical Records.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
 <section id="contact" class="container my-5">
   <h2 class="text-center mb-4 text-primary">Contact Us</h2>
   <p>If you have any questions or need assistance, feel free to reach out!</p>
-  
-  <?php if (isset($_SESSION['contact_success'])): ?>
-  <div class="alert alert-success"><?= $_SESSION['contact_success']; unset($_SESSION['contact_success']); ?></div>
-<?php endif; ?>
 
-<?php if (isset($_SESSION['contact_error'])): ?>
-  <div class="alert alert-danger"><?= $_SESSION['contact_error']; unset($_SESSION['contact_error']); ?></div>
-<?php endif; ?>
+  <div class="row">
+    <div class="col-md-6">
+      <form action="handle_contact.php" method="POST">
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Message</label>
+          <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+    </div>
 
-  <form action="handle_contact.php" method="POST">
-    <div class="mb-3">
-      <label for="name" class="form-label">Full Name</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+    <div class="col-md-6 clinic-info">
+      <h5 class="text-primary">Clinic Info</h5>
+      <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+      <p><strong>Email:</strong> support@fountainspringclinic.com</p>
+      <p><strong>Address:</strong> 123 Wellness Street, Calgary, AB T2P 3G4, Canada</p>
+
+      <h6 class="text-primary mt-4">Follow Us</h6>
+      <div class="social-icons mt-2">
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" class="tiktok"><i class="bi bi-tiktok"></i></a>
+      </div>
     </div>
-    <div class="mb-3">
-      <label for="email" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
-    </div>
-    <div class="mb-3">
-      <label for="message" class="form-label">Message</label>
-      <textarea class="form-control" id="message" name="message" rows="3" placeholder="Your Message" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Send Message</button>
-  </form>
+  </div>
 </section>
 
 <!-- Footer -->
 <footer>
-  &copy; <?= date("Y") ?> Fountain Spring Clinic. All rights reserved.
+  &copy; <span id="year"></span> Fountain Spring Clinic. All rights reserved.
 </footer>
 
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
