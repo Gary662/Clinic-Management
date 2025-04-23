@@ -12,7 +12,7 @@ $doctor_id = $_SESSION['user_id'];
 
 // Get all pending appointments for the logged-in doctor
 $query = "
-    SELECT a.id, a.date, a.status, u.name AS patient_name 
+    SELECT a.id, a.appointment_datetime, a.status, u.name AS patient_name 
     FROM appointments a 
     JOIN users u ON a.patient_id = u.id
     WHERE a.doctor_id = ? AND a.status = 'pending'
@@ -70,7 +70,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
                         <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['patient_name']) ?></td>
                         <!-- Display both date and time -->
-                        <td><?= date('Y-m-d H:i', strtotime($row['date'])) ?></td>
+                        <td><?= date('Y-m-d H:i', strtotime($row['appointment_datetime'])) ?></td>
                         <td><?= ucfirst($row['status']) ?></td>
                         <td>
                             <a href="approve_appointments.php?id=<?= $row['id'] ?>&status=approved" class="btn btn-success">Approve</a>

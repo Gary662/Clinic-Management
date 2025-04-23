@@ -12,7 +12,7 @@
     }
 
     .hero {
-      background: url('../assets/clinic-banner.jpg') center/cover no-repeat;
+      background: url('./assets/clinic-banner.jpg') center/cover no-repeat;
       height: 400px;
       display: flex;
       align-items: center;
@@ -56,7 +56,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        <!-- Updated links -->
         <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="#appointments">Appointments</a></li>
         <li class="nav-item"><a class="nav-link" href="#doctors">Doctors</a></li>
@@ -100,23 +99,32 @@
   </div>
 </section>
 
-
-<!-- Contact Section (Placeholder) -->
+<!-- Contact Section -->
 <section id="contact" class="container my-5">
   <h2 class="text-center mb-4 text-primary">Contact Us</h2>
   <p>If you have any questions or need assistance, feel free to reach out!</p>
-  <form>
+  
+  <?php if (isset($_SESSION['contact_success'])): ?>
+  <div class="alert alert-success"><?= $_SESSION['contact_success']; unset($_SESSION['contact_success']); ?></div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['contact_error'])): ?>
+  <div class="alert alert-danger"><?= $_SESSION['contact_error']; unset($_SESSION['contact_error']); ?></div>
+<?php endif; ?>
+
+  
+  <form action="handle_contact.php" method="POST">
     <div class="mb-3">
       <label for="name" class="form-label">Full Name</label>
-      <input type="text" class="form-control" id="name" placeholder="Your Name">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
     </div>
     <div class="mb-3">
       <label for="email" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="email" placeholder="Your Email">
+      <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
     </div>
     <div class="mb-3">
       <label for="message" class="form-label">Message</label>
-      <textarea class="form-control" id="message" rows="3" placeholder="Your Message"></textarea>
+      <textarea class="form-control" id="message" name="message" rows="3" placeholder="Your Message" required></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Send Message</button>
   </form>

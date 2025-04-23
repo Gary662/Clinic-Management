@@ -12,7 +12,7 @@ $doctor_id = $_SESSION['user_id'];
 
 // Query to fetch appointments for the logged-in doctor
 $query = "
-    SELECT a.id, a.date, a.status, u.name AS patient_name
+    SELECT a.id, a.date, a.time, a.status, u.name AS patient_name
     FROM appointments a
     JOIN users u ON a.patient_id = u.id
     WHERE a.doctor_id = ?
@@ -42,7 +42,8 @@ $result = $stmt->get_result();
             <thead>
                 <tr>
                     <th>Patient</th>
-                    <th>Appointment Date & Time</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -51,7 +52,8 @@ $result = $stmt->get_result();
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr id="appointment-<?= $row['id'] ?>">
                         <td><?= htmlspecialchars($row['patient_name']) ?></td>
-                        <td><?= date('Y-m-d H:i', strtotime($row['date'])) ?></td>
+                        <td><?= date('Y-m-d', strtotime($row['date'])) ?></td>
+                        <td><?= date('H:i', strtotime($row['time'])) ?></td>
                         <td class="status"><?= ucfirst($row['status']) ?></td>
                         <td>
                             <?php if ($row['status'] == 'pending'): ?>

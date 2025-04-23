@@ -56,8 +56,8 @@ if (!$appointment) {
         </tr>
         <tr>
             <th>Date</th>
-            <td><?= $appointment['date'] ?></td>
-        </tr>
+            <td><?= date('Y-m-d', strtotime($appointment['date'])) ?></td>
+            </tr>
         <tr>
             <th>Status</th>
             <td><?= ucfirst($appointment['status']) ?></td>

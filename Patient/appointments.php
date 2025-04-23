@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 $patient_id = $_SESSION['user_id'];
 
 // Fetch all the appointments of the patient, including the time
-$stmt = $conn->prepare("SELECT id, date, time, doctor_id, status FROM appointments WHERE patient_id = ?");
+$stmt = $conn->prepare("SELECT id, date, time, appointment_datetime, doctor_id, status FROM appointments WHERE patient_id = ?");
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -55,8 +55,8 @@ if (isset($_GET['cancel_id'])) {
         <tbody>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?= $row['date'] ?></td>
-                    <td><?= $row['time'] ?></td> <!-- Display the appointment time -->
+                <td><?= date('Y-m-d', strtotime($row['date'])) ?></td>
+                <td><?= $row['time'] ?></td> <!-- Display the appointment time -->
                     <td><?= $row['doctor_id'] ?></td> <!-- You can join doctor table for name -->
                     <td><?= $row['status'] ?></td>
                     <td>

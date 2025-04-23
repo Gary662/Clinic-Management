@@ -28,13 +28,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $age = $_POST['age'] ?? 0;
     $dob = $_POST['dob'] ?? ''; // Date of Birth
 
+    // if ($doctor_id && $date && $time && $full_name && $phone && $health_care_number && $sex && $age && $dob) {
+    //     // Combine the date and time into a single datetime for the appointment
+    //     $appointment_datetime = $date . ' ' . $time;
+
+    //     // Check if the patient already has an appointment with the same doctor at the same datetime
+    //     $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND appointment_datetime = ?");
+    //     $check->bind_param("iis", $patient_id, $doctor_id, $appointment_datetime);
+    //     $check->execute();
+    //     $result = $check->get_result();
+
+    //     if ($result->num_rows > 0) {
+    //         $error = "You already have an appointment at this time.";
+    //     } else {
+    //         // Insert the appointment with the combined date and time
+    //         $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, full_name, phone, health_care_number, sex, age, dob) 
+    //                                 VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
+    //         $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $appointment_datetime, $full_name, $phone, $health_care_number, $sex, $age, $dob);
+    //         $stmt->execute();
+    //         $success = "Appointment requested!";
+    //     }
+    // } else {
+    //     $error = "Please fill in all required fields.";
+    // }
+
     if ($doctor_id && $date && $time && $full_name && $phone && $health_care_number && $sex && $age && $dob) {
         // Combine the date and time into a single datetime for the appointment
+
         $appointment_datetime = $date . ' ' . $time;
 
         // Check if the patient already has an appointment with the same doctor at the same datetime
-        $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND appointment_datetime = ?");
-        $check->bind_param("iis", $patient_id, $doctor_id, $appointment_datetime);
+        $check = $conn->prepare("SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? AND date = ? AND time = ? AND appointment_datetime = ?");
+        // $check->bind_param("iis", $patient_id, $doctor_id, $date, $time, $appointment_datetime);
+        $check->bind_param("iisss", $patient_id, $doctor_id, $date, $time, $appointment_datetime);
         $check->execute();
         $result = $check->get_result();
 
@@ -42,15 +68,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "You already have an appointment at this time.";
         } else {
             // Insert the appointment with the combined date and time
-            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, status, full_name, phone, health_care_number, sex, age, dob) 
-                                    VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $appointment_datetime, $full_name, $phone, $health_care_number, $sex, $age, $dob);
+            // $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, date, time, appointment_datetime, status, full_name, phone, health_care_number, sex, age, dob) 
+            //                         VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
+            // $stmt->bind_param("iisssssis", $patient_id, $doctor_id, $date, $time, $appointment_datetime, $full_name, $phone, $health_care_number, $sex, $age, $dob);
+            // $stmt->execute();
+            $stmt = $conn->prepare("INSERT INTO appointments (patient_id, doctor_id, date, time, appointment_datetime, status, full_name, phone, health_care_number, sex, age, dob) 
+                        VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("iissssssiss", $patient_id, $doctor_id, $date, $time, $appointment_datetime, $full_name, $phone, $health_care_number, $sex, $age, $dob);
             $stmt->execute();
+
             $success = "Appointment requested!";
         }
     } else {
         $error = "Please fill in all required fields.";
     }
+
 }
 ?>
 

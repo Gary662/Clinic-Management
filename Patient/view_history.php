@@ -9,14 +9,35 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
 
 $patient_id = $_SESSION['user_id'];
 
+// $query = "
+//     SELECT a.appointment_datetime, a.status, u.name AS doctor_name, mh.notes
+//     FROM appointments a
+//     JOIN users u ON a.doctor_id = u.id
+//     LEFT JOIN medical_history mh 
+//         ON a.patient_id = mh.patient_id 
+//         AND 
+//     WHERE a.patient_id = ?
+//     ORDER BY a.date DESC
+// ";
 $query = "
-    SELECT a.date, a.status, u.name AS doctor_name, m.notes
-    FROM appointments a
-    JOIN users u ON a.doctor_id = u.id
-    LEFT JOIN medical_notes m ON a.id = m.appointment_id
-    WHERE a.patient_id = ?
-    ORDER BY a.date DESC
+SELECT 
+    a.appointment_datetime, 
+    a.status, 
+    u.name AS doctor_name, 
+    mh.notes
+FROM 
+    appointments a
+JOIN 
+    users u ON a.doctor_id = u.id
+LEFT JOIN 
+    medical_history mh ON mh.patient_id = a.patient_id 
+WHERE 
+    a.patient_id = ?
+ORDER BY 
+    a.appointment_datetime DESC
+
 ";
+
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
@@ -47,7 +68,7 @@ $result = $stmt->get_result();
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= date('Y-m-d H:i', strtotime($row['date'])) ?></td>
+                        <td><?= date('Y-m-d H:i', strtotime($row['appointment_datetime'])) ?></td>
                         <td><?= htmlspecialchars($row['doctor_name']) ?></td>
                         <td><?= ucfirst($row['status']) ?></td>
                         <td><?= $row['notes'] ? htmlspecialchars($row['notes']) : '—' ?></td>

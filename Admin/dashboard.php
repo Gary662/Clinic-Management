@@ -16,7 +16,6 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
                               FROM appointments a 
                               JOIN users u ON a.patient_id = u.id
                               JOIN users d ON a.doctor_id = d.id");
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,12 +29,15 @@ $appointments = $conn->query("SELECT a.id, a.date, a.status, u.name AS patient_n
   <h1>Admin Dashboard</h1>
 
   <!-- Navigation for Admin Dashboard -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
     <a class="navbar-brand" href="#">Admin Panel</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="messages.php">Messages</a> <!-- ✅ New Messages Link -->
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../index.php">Home</a>
